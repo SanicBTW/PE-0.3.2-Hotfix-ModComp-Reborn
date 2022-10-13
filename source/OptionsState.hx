@@ -39,8 +39,6 @@ class OptionsState extends MusicBeatState
 		#end
 		'Controls',
 		'Preferences',
-		#if (STORAGE_ACCESS) 'Revoke permissions',
-		#end
 	];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 
@@ -135,26 +133,6 @@ class OptionsState extends MusicBeatState
 
 				case 'Adjust Delay and Combo':
 					LoadingState.loadAndSwitchState(new options.NoteOffsetState());
-
-				// on android, if you gave perms to the app you need to manually remove them in settings, this only removes the code access to filesystem nothing else
-				case 'Revoke permissions':
-					#if windows
-					DiscordClient.shutdown();
-					#end
-
-					TitleState.initialized = false;
-					TitleState.closedState = false;
-
-					ClientPrefs.allowFileSys = false;
-					ClientPrefs.answeredReq = false;
-					ClientPrefs.saveSettings();
-
-					FlxG.mouse.visible = true;
-
-					FlxG.sound.music.fadeOut(0.3);
-					Main.tweenFPS(false, 0.5);
-					Main.tweenMemory(false, 0.5);
-					FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
 			}
 		}
 	}

@@ -2,7 +2,6 @@
 	"songs": [
 		["Expurgation", "clown", [165, 0, 77]],
         ["Accelerant", "hank", [165, 0, 77]]
-        
 	],
 
 	"weekCharacters": [
@@ -13,8 +12,8 @@
 	"weekBackground": "stage",
 
 	"storyName": "",
-	"weekBefore": "tutorial",
-	"weekName": "Tutorial",
+	"weekBefore": "",
+	"weekName": "Madness",
 	"startUnlocked": true,
 
 	"hideStoryMode": false,

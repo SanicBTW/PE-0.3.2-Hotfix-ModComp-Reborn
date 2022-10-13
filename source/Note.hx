@@ -95,6 +95,12 @@ class Note extends FlxSprite
 		{
 			switch (value)
 			{
+				case 'Bullet Note':
+					texture = "notes/BULLETNOTE_assets";
+					hitHealth += 0.01;
+				case 'EX Note':
+					texture = "notes/placeholderEX";
+					hitHealth -= 100;
 				case 'No Animation':
 					noAnimation = true;
 				case 'GF Sing':

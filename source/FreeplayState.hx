@@ -22,10 +22,6 @@ using StringTools;
 #if desktop
 import Discord.DiscordClient;
 #end
-#if STORAGE_ACCESS
-import features.StorageAccess;
-import sys.io.File;
-#end
 
 class FreeplayState extends MusicBeatState
 {
@@ -103,26 +99,6 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		#if STORAGE_ACCESS
-		if (ClientPrefs.allowFileSys)
-		{
-			var internalSongs = StorageAccess.getSongs();
-			for (i in 0...internalSongs.length)
-			{
-				var songName = internalSongs[i];
-
-				// gotta improve it like adding the got difficulties to a new array and use that array of diffs instead
-				var check = StorageAccess.getCharts(songName);
-				if (check == "exists")
-				{
-					addSong(songName, 0, "bf", FlxColor.fromRGB(146, 113, 253), true);
-				}
-
-				System.gc();
-			}
-		}
-		#end
-
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
@@ -196,9 +172,9 @@ class FreeplayState extends MusicBeatState
 		super.create();
 	}
 
-	public static function addSong(songName:String, weekNum:Int, songCharacter:String, color:Int, intStorage:Bool = false)
+	public static function addSong(songName:String, weekNum:Int, songCharacter:String, color:Int)
 	{
-		songs.push(new SongMetadata(songName, weekNum, songCharacter, color, intStorage));
+		songs.push(new SongMetadata(songName, weekNum, songCharacter, color));
 	}
 
 	function weekIsLocked(name:String):Bool
@@ -297,43 +273,19 @@ class FreeplayState extends MusicBeatState
 
 		if (accepted)
 		{
-			#if STORAGE_ACCESS
-			if (songs[curSelected].intStorage && ClientPrefs.allowFileSys)
+			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
+			var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
+			if (!OpenFlAssets.exists(Paths.json(songLowercase + '/' + poop)))
 			{
-				var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
-				if (!StorageAccess.exists(StorageAccess.getChart(songLowercase, curDifficulty)))
-				{
-					curDifficulty = 1;
-					trace("Couldnt find file on local storage");
-				}
-
-				PlayState.SONG = Song.loadFromJson(File.getContent(StorageAccess.getChart(songLowercase, curDifficulty)), "", true);
-				PlayState.isStoryMode = false;
-				PlayState.storyDifficulty = curDifficulty;
-				PlayState.inst = StorageAccess.getInst(songs[curSelected].songName);
-				PlayState.voices = StorageAccess.getVoices(songs[curSelected].songName);
-				PlayState.storyWeek = 0;
-
-				goToPlayState();
+				poop = songLowercase;
+				curDifficulty = 1;
+				trace('Couldnt find file');
 			}
-			else
-			#end if (!songs[curSelected].intStorage)
-		{
-				var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
-				var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
-				if (!OpenFlAssets.exists(Paths.json(songLowercase + '/' + poop)))
-				{
-					poop = songLowercase;
-					curDifficulty = 1;
-					trace('Couldnt find file');
-				}
-
-				PlayState.SONG = Song.loadFromJson(poop, songLowercase);
-				PlayState.isStoryMode = false;
-				PlayState.storyDifficulty = curDifficulty;
-				PlayState.storyWeek = songs[curSelected].week;
-				goToPlayState();
-		}
+			PlayState.SONG = Song.loadFromJson(poop, songLowercase);
+			PlayState.isStoryMode = false;
+			PlayState.storyDifficulty = curDifficulty;
+			PlayState.storyWeek = songs[curSelected].week;
+			goToPlayState();
 		}
 		else if (controls.RESET)
 		{
@@ -482,14 +434,12 @@ class SongMetadata
 	public var week:Int = 0;
 	public var songCharacter:String = "";
 	public var color:Int = -7179779;
-	public var intStorage:Bool = false;
 
-	public function new(song:String, week:Int, songCharacter:String, color:Int, intStorage:Bool = false)
+	public function new(song:String, week:Int, songCharacter:String, color:Int)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
 		this.color = color;
-		this.intStorage = intStorage;
 	}
 }

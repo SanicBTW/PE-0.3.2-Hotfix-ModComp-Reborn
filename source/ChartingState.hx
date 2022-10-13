@@ -43,7 +43,7 @@ using StringTools;
 
 class ChartingState extends MusicBeatState
 {
-	public static var noteTypeList:Array<String> = ['', 'Alt Animation', 'Hey!', 'GF Sing', 'No Animation',];
+	public static var noteTypeList:Array<String> = ['', 'Alt Animation', 'Hey!', 'GF Sing', 'No Animation', "Bullet Note", "EX Note"];
 
 	private static var eventStuff:Array<Dynamic> = [
 		['', "Nothing. Yep, that's right."],

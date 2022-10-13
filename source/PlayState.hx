@@ -3608,8 +3608,20 @@ class PlayState extends MusicBeatState
 
 				if (char != null && !(released && note.isLiftNote))
 				{
-					char.playAnim(singAnims[Std.int(Math.abs(note.noteData)) % 4] + daAlt, true);
-					char.holdTimer = 0;
+					switch(note.noteType)
+					{
+						case "Bullet Note":
+							dad.playAnim(singAnims[Std.int(Math.abs(note.noteData)) % 4].replace("sing", "") + "shoot", true);
+							boyfriend.playAnim('dodge', true);
+							
+							boyfriend.specialAnim = true;
+							dad.specialAnim = true;
+
+							FlxG.camera.shake(0.01, 0.2);
+						default:
+							char.playAnim(singAnims[Std.int(Math.abs(note.noteData)) % 4] + daAlt, true);
+							char.holdTimer = 0;
+					}
 				}
 
 				if (note.noteType == "Hey!")
