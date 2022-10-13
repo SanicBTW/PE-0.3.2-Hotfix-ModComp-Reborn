@@ -1,4 +1,4 @@
-# Using [v1.0.0](https://github.com/SanicBTW/FNF-PsychEngine-0.3.2h)
+# Using [v1.1.0](https://github.com/SanicBTW/FNF-PsychEngine-0.3.2h)
 
 # [Old repo](https://github.com/SanicBTW/FNF-PsychEngine-0.3.2-hotfix)
 

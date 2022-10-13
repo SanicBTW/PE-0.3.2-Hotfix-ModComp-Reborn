@@ -1,5 +1,6 @@
 package options;
 
+import openfl.text.TextFormat;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -15,7 +16,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 	static var unselectableOptions:Array<String> = ['GRAPHICS', 'GAMEPLAY', 'CAMERA', 'VISUALS AND UI', 'AUDIO',];
 	static var noCheckbox:Array<String> = [
 		'Framerate', 'Pause Music', 'Miss Volume', 'Hitsound Volume', 'Score Text design', 'Input', 'Rating Offset', 'Sick! Hit Window', 'Good Hit Window',
-		'Bad Hit Window', 'Safe Frames', 'Camera Mov Displacement'
+		'Bad Hit Window', 'Safe Frames', 'Camera Mov Displacement', 'Counters Font'
 	];
 
 	static var options:Array<String> = [
@@ -41,6 +42,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Smooth cam zooms',
 		'Camera Movement',
 		'Camera Mov Displacement',
+		'Snap camera on bf when gameover',
 		'VISUALS AND UI',
 		'FPS Counter',
 		'Memory Counter',
@@ -53,6 +55,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'Opponent Note Splashes',
 		'Score Text Zoom on Hit',
 		'Combo Stacking',
+		'Counters Font',
 		'AUDIO',
 		'Pause Music',
 		'Miss Volume',
@@ -277,6 +280,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						ClientPrefs.comboStacking = !ClientPrefs.comboStacking;
 					case 'Pause game when focus is lost':
 						ClientPrefs.pauseOnFocusLost = !ClientPrefs.pauseOnFocusLost;
+					case 'Snap camera on bf when gameover':
+						ClientPrefs.snapCameraOnGameover = !ClientPrefs.snapCameraOnGameover;
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				reloadValues();
@@ -376,8 +381,15 @@ class PreferencesSubstate extends MusicBeatSubstate
 							ClientPrefs.cameraMovementDisplacement += floatAdd;
 							if (ClientPrefs.cameraMovementDisplacement < 5)
 								ClientPrefs.cameraMovementDisplacement = 5;
-							else if (ClientPrefs.cameraMovementDisplacement > 50)
-								ClientPrefs.cameraMovementDisplacement = 50;
+							else if (ClientPrefs.cameraMovementDisplacement > 20)
+								ClientPrefs.cameraMovementDisplacement = 20;
+						case 'Counters Font':
+							var options = ["Funkin", "VCR OSD Mono", "Sans", "Pixel"];
+							if (controls.UI_LEFT_P)
+								changeState(-1, options);
+							if (controls.UI_RIGHT_P)
+								changeState(1, options);
+							ClientPrefs.counterFont = options[index];
 					}
 				reloadValues();
 
@@ -495,6 +507,10 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "Changes the camera displace value\nOnly works if camera movement is enabled";
 			case 'Pause game when focus is lost':
 				daText = "I don't know if I should put something here";
+			case 'Snap camera on bf when gameover':
+				daText = "Snaps the camera on bf when he is dead";
+			case 'Counters Font':
+				daText = "Change the FPS Counter and Memory Counter fonts";
 		}
 		descText.text = daText;
 
@@ -596,6 +612,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.comboStacking;
 					case 'Pause game when focus is lost':
 						daValue = ClientPrefs.pauseOnFocusLost;
+					case 'Snap camera on bf when gameover':
+						daValue = ClientPrefs.snapCameraOnGameover;
 				}
 				checkbox.daValue = daValue;
 			}
@@ -632,6 +650,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daText = '' + FlxMath.roundDecimal(ClientPrefs.safeFrames, 1);
 					case 'Camera Mov Displacement':
 						daText = '' + FlxMath.roundDecimal(ClientPrefs.cameraMovementDisplacement, 1);
+					case 'Counters Font':
+						daText = ClientPrefs.counterFont;
+						updateFonts();
 				}
 				var lastTracker:FlxSprite = text.sprTracker;
 				text.sprTracker = null;
@@ -651,5 +672,29 @@ class PreferencesSubstate extends MusicBeatSubstate
 			}
 		}
 		return options[num] == '';
+	}
+
+	private function updateFonts()
+	{
+		var formatSize:Int = 12;
+		var propername:String = ClientPrefs.counterFont;
+		switch(ClientPrefs.counterFont)
+		{
+			case "Funkin":
+				formatSize = 18;
+			case "VCR OSD Mono":
+				formatSize = 16;
+			case "Pixel":
+				formatSize = 10;
+				propername = "Pixel Arial 11 Bold";
+			case "Sans":
+				propername = "_sans";
+		}
+
+		Main.fpsVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
+		Main.fpsVar.embedFonts = true;
+
+		Main.memoryVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
+		Main.memoryVar.embedFonts = true;
 	}
 }

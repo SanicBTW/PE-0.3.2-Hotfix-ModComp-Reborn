@@ -1,5 +1,6 @@
 package;
 
+import openfl.text.TextFormat;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -29,6 +30,13 @@ using StringTools;
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
+// import flixel.graphics.FlxGraphic;
+#if android
+import com.player03.android6.Permissions;
+#end
+#if STORAGE_ACCESS
+import features.StorageAccess;
+#end
 
 class TitleState extends MusicBeatState
 {
@@ -53,14 +61,26 @@ class TitleState extends MusicBeatState
 		FlxG.sound.muteKeys = muteKeys;
 		FlxG.sound.volumeDownKeys = volumeDownKeys;
 		FlxG.sound.volumeUpKeys = volumeUpKeys;
+		#if STORAGE_ACCESS
 		#if android
 		FlxG.android.preventDefaultKeys = [BACK];
+		if (Permissions.hasPermission(Permissions.READ_EXTERNAL_STORAGE)
+			&& Permissions.hasPermission(Permissions.WRITE_EXTERNAL_STORAGE)
+			&& ClientPrefs.allowFileSys)
+		{
+			StorageAccess.checkStorage();
+		}
+		#end
+		#if windows
+		if (ClientPrefs.allowFileSys)
+		{
+			StorageAccess.checkStorage();
+		}
+		#end
 		#end
 
 		FlxG.keys.preventDefaultKeys = [TAB];
 		FlxG.mouse.visible = false;
-
-		PlayerSettings.init();
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
@@ -68,10 +88,9 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
-		ClientPrefs.loadPrefs();
-
 		Highscore.load();
+
+		setupFonts();
 
 		#if desktop
 		DiscordClient.initialize();
@@ -351,5 +370,29 @@ class TitleState extends MusicBeatState
 			remove(credGroup);
 			skippedIntro = true;
 		}
+	}
+
+	function setupFonts()
+	{
+		var formatSize:Int = 12;
+		var propername:String = ClientPrefs.counterFont;
+		switch(ClientPrefs.counterFont)
+		{
+			case "Funkin":
+				formatSize = 18;
+			case "VCR OSD Mono":
+				formatSize = 16;
+			case "Pixel":
+				formatSize = 10;
+				propername = "Pixel Arial 11 Bold";
+			case "Sans":
+				propername = "_sans";
+		}
+
+		Main.fpsVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
+		Main.fpsVar.embedFonts = true;
+
+		Main.memoryVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
+		Main.memoryVar.embedFonts = true;
 	}
 }

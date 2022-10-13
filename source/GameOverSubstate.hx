@@ -34,15 +34,13 @@ class GameOverSubstate extends MusicBeatSubstate
 		endSoundName = 'gameOverEnd';
 	}
 
-	public function new(x:Float, y:Float, camX:Float, camY:Float)
+	public function new(x:Float, y:Float)
 	{
 		super();
 
 		Conductor.songPosition = 0;
 
 		boyfriend = new Boyfriend(x, y, characterName);
-		boyfriend.x += boyfriend.positionArray[0];
-		boyfriend.y += boyfriend.positionArray[1];
 		add(boyfriend);
 
 		camFollow = new FlxPoint(boyfriend.getGraphicMidpoint().x, boyfriend.getGraphicMidpoint().y);
@@ -51,6 +49,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		Conductor.changeBPM(100);
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
+		if (ClientPrefs.snapCameraOnGameover)
+			FlxG.camera.focusOn(camFollow);
 
 		boyfriend.playAnim('firstDeath');
 
@@ -81,21 +81,26 @@ class GameOverSubstate extends MusicBeatSubstate
 			#if android
 			removeVirtualPad();
 			#end
-			endBullshit();
+			endBullshit(function()
+			{
+				MusicBeatState.resetState();
+			});
 		}
 
 		if (controls.BACK)
 		{
-			FlxG.sound.music.stop();
-			PlayState.deathCounter = 0;
-			PlayState.seenCutscene = false;
-			#if android
-			removeVirtualPad();
-			#end
+			endBullshit(function()
+			{
+				PlayState.deathCounter = 0;
+				PlayState.seenCutscene = false;
+				#if android
+				removeVirtualPad();
+				#end
 
-			MusicBeatState.switchState(PlayState.isStoryMode ? new StoryMenuState() : new FreeplayState());
+				MusicBeatState.switchState(PlayState.isStoryMode ? new StoryMenuState() : new FreeplayState());
 
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			}, false);
 		}
 
 		if (boyfriend.animation.curAnim.name == 'firstDeath')
@@ -103,7 +108,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			if (boyfriend.animation.curAnim.curFrame >= 12 && !isFollowingAlready)
 			{
 				FlxG.camera.follow(camFollowPos, LOCKON, 1);
-				updateCamera = true;
+				updateCamera = (!ClientPrefs.snapCameraOnGameover);
 				isFollowingAlready = true;
 			}
 
@@ -132,20 +137,24 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.sound.playMusic(Paths.music(loopSoundName), volume);
 	}
 
-	function endBullshit():Void
+	function endBullshit(cb:Void->Void, playAnimSound:Bool = true):Void
 	{
 		if (!isEnding)
 		{
 			isEnding = true;
-			boyfriend.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
-			FlxG.sound.play(Paths.music(endSoundName));
+			if (playAnimSound)
+			{
+				boyfriend.playAnim('deathConfirm', true);
+				FlxG.sound.play(Paths.music(endSoundName));
+			}
+			else
+			{
+				FlxG.sound.play(Paths.sound("cancelMenu"));
+			}
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)
 			{
-				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
-				{
-					MusicBeatState.resetState();
-				});
+				FlxG.camera.fade(FlxColor.BLACK, 2, false, cb);
 			});
 		}
 	}
