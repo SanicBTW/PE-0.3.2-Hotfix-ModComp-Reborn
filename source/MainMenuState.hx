@@ -30,7 +30,9 @@ class MainMenuState extends MusicBeatState
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
 
-	var optionShit:Array<String> = ['story_mode', 'freeplay', 'options'];
+	// var optionShit:Array<String> = ['story_mode', 'freeplay', 'options']; thinking if adding story mode shit or not
+	// if i do then i will have to get teh week asset for each week and that shit also having to add more stuff to make it feel like the mod
+	var optionShit:Array<String> = ["freeplay", "options"];
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;

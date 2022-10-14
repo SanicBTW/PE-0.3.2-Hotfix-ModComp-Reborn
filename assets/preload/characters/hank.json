@@ -228,8 +228,8 @@
 	"no_antialiasing": false,
 	"image": "characters/madness/accelerant/hank",
 	"position": [
-		-30,
-		300
+		0,
+		180
 	],
 	"healthicon": "hank",
 	"flip_x": false,
@@ -239,8 +239,8 @@
 		59
 	],
 	"camera_position": [
-		250,
-		0
+		-100,
+		80
 	],
 	"sing_duration": 4,
 	"scale": 1
