@@ -53,7 +53,6 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		songs = [];
-		openfl.Assets.cache.clear("assets");
 		openfl.Assets.cache.clear("songs");
 		openfl.Assets.cache.clear("images");
 

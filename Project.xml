@@ -34,20 +34,27 @@
 	
 	<define name="PRELOAD_ALL" unless="web"/>
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
+
+	<!-- its time to go smart on asset loading -->
 	
 	<section if="PRELOAD_ALL">
 		<library name="songs"         preload="true" />
 		<library name="shared"        preload="true" />
+		<library name="AccelerantAssets" preload="true"/>
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
 		<library name="songs"         preload="false" />
 		<library name="shared"        preload="false" />
+		<library name="AccelerantAssets" preload="false"/>
 	</section>
 	
 	<assets path="assets/songs"         library="songs"         exclude="*.mp3"/>
 	<assets path="assets/shared"        library="shared"        exclude="*.mp3"/>
 	<assets path="assets/android" if="android"/>
+
+	<!-- its time to go smart on asset loading - yes im writing it here again because i want to -->
+	<assets path="assets/AccelerantAssets" library="AccelerantAssets" exclude="*.mp3"/>
 
 	<assets path="assets/fonts" embed='true'/>
 	<!-- _______________________________ Libraries ______________________________ -->
