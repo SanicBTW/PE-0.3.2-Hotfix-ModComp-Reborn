@@ -1,7 +1,8 @@
 {
 	"songs": [
-		["Expurgation", "clown", [165, 0, 77]],
-        ["Accelerant", "hank", [165, 0, 77]]
+		["Unoaded", "uberdork", [165, 0, 77]],
+        ["Challenge-edd", "edd", [165, 0, 77]],
+        ["Challenge-edd-fucked", "edd", [165, 0, 77]]
 	],
 
 	"weekCharacters": [
@@ -13,7 +14,7 @@
 
 	"storyName": "",
 	"weekBefore": "",
-	"weekName": "Madness",
+	"weekName": "Online VS",
 	"startUnlocked": true,
 
 	"hideStoryMode": false,
