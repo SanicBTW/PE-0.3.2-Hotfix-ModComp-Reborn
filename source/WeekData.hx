@@ -95,7 +95,7 @@ class WeekData
 		var directories:Array<String> = [Paths.getPreloadPath()];
 		var originalLength:Int = directories.length;
 
-		var sexList:Array<String> = CoolUtil.coolTextFile(Paths.getPreloadPath('weeks/weekList.txt'));
+		var sexList:Array<String> = CoolUtil.coolTextFile(Paths.getLibraryPath('weeks/weekList.txt', ClientPrefs.modDirectory));
 		for (i in 0...sexList.length)
 		{
 			for (j in 0...directories.length)
@@ -107,13 +107,6 @@ class WeekData
 					if (week != null)
 					{
 						var weekFile:WeekData = new WeekData(week, sexList[i]);
-
-						#if MODS_ALLOWED
-						if (j >= originalLength)
-						{
-							weekFile.folder = directories[j].substring(Paths.mods().length, directories[j].length - 1);
-						}
-						#end
 
 						if (weekFile != null
 							&& (isStoryMode == null
@@ -137,12 +130,6 @@ class WeekData
 			if (week != null)
 			{
 				var weekFile:WeekData = new WeekData(week, weekToCheck);
-				if (i >= originalLength)
-				{
-					#if MODS_ALLOWED
-					weekFile.folder = directory.substring(Paths.mods().length, directory.length - 1);
-					#end
-				}
 				if ((PlayState.isStoryMode && !weekFile.hideStoryMode) || (!PlayState.isStoryMode && !weekFile.hideFreeplay))
 				{
 					weeksLoaded.set(weekToCheck, weekFile);

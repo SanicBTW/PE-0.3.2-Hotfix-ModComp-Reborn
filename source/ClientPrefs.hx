@@ -54,6 +54,9 @@ class ClientPrefs
 	public static var ratingsStyle:String = "Classic";
 	public static var smallRatingSize:Bool = true;
 
+	public static var selectedMod:String = "base";
+	public static var modDirectory:String = "";
+
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
 		//Key Bind, Name for ControlsSubState
 		'note_left'		=> [A, LEFT],
@@ -227,6 +230,8 @@ class ClientPrefs
 			ratingsStyle = FlxG.save.data.ratingsStyle;
 		if (FlxG.save.data.smallRatingSize != null)
 			smallRatingSize = FlxG.save.data.smallRatingSize;
+		if (FlxG.save.data.selectedMod != null)
+			selectedMod = FlxG.save.data.selectedMod;
 	}
 
 	static function saveFlxGPrefs()
@@ -275,6 +280,7 @@ class ClientPrefs
 		FlxG.save.data.osuManiaSimulation = osuManiaSimulation;
 		FlxG.save.data.ratingsStyle = ratingsStyle;
 		FlxG.save.data.smallRatingSize = smallRatingSize;
+		FlxG.save.data.selectedMod = selectedMod;
 
 		FlxG.save.flush();
 	}
@@ -282,12 +288,12 @@ class ClientPrefs
 	public static function reloadControls() {
 		PlayerSettings.player1.controls.setKeyboardScheme(KeyboardScheme.Solo);
 
-		TitleState.muteKeys = copyKey(keyBinds.get('volume_mute'));
-		TitleState.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
-		TitleState.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
-		FlxG.sound.muteKeys = TitleState.muteKeys;
-		FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
-		FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
+		SetupState.muteKeys = copyKey(keyBinds.get('volume_mute'));
+		SetupState.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
+		SetupState.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
+		FlxG.sound.muteKeys = SetupState.muteKeys;
+		FlxG.sound.volumeDownKeys = SetupState.volumeDownKeys;
+		FlxG.sound.volumeUpKeys = SetupState.volumeUpKeys;
 	}
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey> {
 		var copiedArray:Array<FlxKey> = arrayToCopy.copy();
