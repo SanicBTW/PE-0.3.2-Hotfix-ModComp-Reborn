@@ -90,9 +90,6 @@ class Note extends FlxSprite
 		colorSwap.hue = ClientPrefs.arrowHSV[noteData % 4][0] / 360;
 		colorSwap.saturation = ClientPrefs.arrowHSV[noteData % 4][1] / 100;
 		colorSwap.brightness = ClientPrefs.arrowHSV[noteData % 4][2] / 100;
-		noteSplashHue = colorSwap.hue;
-		noteSplashSat = colorSwap.saturation;
-		noteSplashBrt = colorSwap.brightness;
 
 		if (noteData > -1 && noteType != value)
 		{
@@ -103,11 +100,18 @@ class Note extends FlxSprite
 					hitHealth += 0.01;
 					missHealth = 0.5;
 					ignoreNote = false;
-					noteSplashBrt = 100;
+					noteSplashDisabled = true;
+					hitsoundDisabled = true;
 				case 'EX Note':
-					texture = "notes/placeholderEX";
+					if(CoolUtil.difficulties[PlayState.storyDifficulty] == "FUCKED")
+						texture = "notes/EX Note";
+					else
+						texture = "notes/placeholderEX";
 					hitHealth -= 100;
+					missHealth = 0;
 					ignoreNote = true;
+					noteSplashDisabled = true;
+					hitsoundDisabled = true;
 				case 'No Animation':
 					noAnimation = true;
 				case 'GF Sing':
@@ -115,6 +119,9 @@ class Note extends FlxSprite
 			}
 			noteType = value;
 		}
+		noteSplashHue = colorSwap.hue;
+		noteSplashSat = colorSwap.saturation;
+		noteSplashBrt = colorSwap.brightness;
 		return value;
 	}
 

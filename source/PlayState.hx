@@ -2029,18 +2029,6 @@ class PlayState extends MusicBeatState
 				trace('LOADING NEXT SONG');
 				trace(nextSong + difficulty);
 
-				var winterHorrorlandNext = (SONG.song.toLowerCase().replace(" ", "-") == "eggnog");
-				if (winterHorrorlandNext)
-				{
-					var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
-						-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-					blackShit.scrollFactor.set();
-					add(blackShit);
-					camHUD.visible = false;
-
-					FlxG.sound.play(Paths.sound('Lights_Shut_off'));
-				}
-
 				prevCamFollow = camFollow;
 				prevCamFollowPos = camFollowPos;
 
@@ -2051,17 +2039,7 @@ class PlayState extends MusicBeatState
 				System.gc();
 				FlxG.sound.music.stop();
 
-				if (winterHorrorlandNext)
-				{
-					new FlxTimer().start(1.5, function(tmr:FlxTimer)
-					{
-						LoadingState.loadAndSwitchState(new PlayState());
-					});
-				}
-				else
-				{
-					LoadingState.loadAndSwitchState(new PlayState());
-				}
+				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		}
 		else
@@ -2715,9 +2693,15 @@ class PlayState extends MusicBeatState
 						if (daNote.noteType == "Alt Animation")
 							daAlt = '-alt';
 
+						if (daNote.noteType == "Bullet Note")
+						{
+							char.playAnim("hurt", true);
+							return;
+						}
+
 						char.playAnim(singAnims[Std.int(Math.abs(daNote.noteData)) % 4] + "miss" + daAlt, true);
 					}
-
+					
 					if (ClientPrefs.missVolume > 0)
 						FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), ClientPrefs.missVolume);
 			}
@@ -2789,8 +2773,8 @@ class PlayState extends MusicBeatState
 
 							FlxG.camera.shake(0.01, 0.2);
 
-							//yo you might want to add a check for the beat or step to avoid having duplicate sounds
-							FlxG.sound.play(Paths.sound('hankshoot', "AccelerantAssets"));
+							if(CoolUtil.difficulties[storyDifficulty] == "FUCKED")
+								FlxG.sound.play(Paths.sound('hankshoot', "AccelerantAssets"));
 						default:
 							char.playAnim(singAnims[Std.int(Math.abs(note.noteData)) % 4] + daAlt, true);
 							char.holdTimer = 0;
@@ -2962,6 +2946,18 @@ class PlayState extends MusicBeatState
 		if (curStep == lastStepHit)
 		{
 			return;
+		}
+
+		switch(curStage)
+		{
+			case "nevada":
+				switch(curStep)
+				{
+					case 16:
+						defaultCamZoom = 0.6;
+						FlxG.sound.play(Paths.sound('hankreadyupsound', "AccelerantAssets"));
+						FlxTween.tween(camGame, {zoom: 0.6}, 0.3, { ease: FlxEase.circInOut });
+				}
 		}
 
 		lastStepHit = curStep;

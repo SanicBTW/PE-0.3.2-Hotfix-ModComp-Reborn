@@ -1,0 +1,29 @@
+{
+	"song": {
+		"speed": 3.1,
+		"stage": "nevada",
+		"player1": "bf",
+		"player2": "hank",
+		"player3": null,
+		"events": [
+			[
+				1463.41463414634,
+				[
+					[
+						"Play Animation",
+						"idle-alt",
+						"0"
+					]
+				]
+			]
+		],
+		"notes": [],
+		"splashSkin": null,
+		"validScore": false,
+		"gfVersion": null,
+		"bpm": 164,
+		"arrowSkin": null,
+		"needsVoices": true,
+		"song": "Accelerant"
+	}
+}
