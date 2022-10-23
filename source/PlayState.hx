@@ -2521,7 +2521,7 @@ class PlayState extends MusicBeatState
 				{
 					spr.playAnim('pressed');
 					spr.resetAnim = 0;
-					if (ClientPrefs.ghostTapping && !cpuControlled && ClientPrefs.ghostTappingBFSing)
+					if (ClientPrefs.ghostTapping && !cpuControlled && ClientPrefs.ghostTappingBFSing && !boyfriend.specialAnim)
 					{
 						boyfriend.playAnim(singAnims[spr.ID]);
 					}
@@ -2638,7 +2638,7 @@ class PlayState extends MusicBeatState
 				{
 					spr.playAnim('pressed');
 					spr.resetAnim = 0;
-					if (ClientPrefs.ghostTapping && !cpuControlled && ClientPrefs.ghostTappingBFSing)
+					if (ClientPrefs.ghostTapping && !cpuControlled && ClientPrefs.ghostTappingBFSing && !boyfriend.specialAnim)
 					{
 						boyfriend.playAnim(singAnims[spr.ID]);
 					}
