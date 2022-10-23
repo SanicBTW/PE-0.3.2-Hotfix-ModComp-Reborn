@@ -27,8 +27,6 @@ class FreeplayState extends MusicBeatState
 {
 	public static var songs:Array<SongMetadata> = [];
 
-	var selector:FlxText;
-
 	public static var curSelected:Int = 0;
 
 	var curDifficulty:Int = 1;
@@ -53,13 +51,8 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		songs = [];
-		openfl.Assets.cache.clear("songs");
-		openfl.Assets.cache.clear("images");
 
-		PlayState.inst = null;
-		PlayState.voices = null;
-
-		System.gc();
+		Main.clearCache();
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
@@ -86,7 +79,6 @@ class FreeplayState extends MusicBeatState
 				leChars.push(leWeek.songs[j][1]);
 			}
 
-			WeekData.setDirectoryFromWeek(leWeek);
 			for (song in leWeek.songs)
 			{
 				var colors:Array<Int> = song[2];
@@ -130,7 +122,6 @@ class FreeplayState extends MusicBeatState
 			iconArray.push(icon);
 			add(icon);
 		}
-		WeekData.setDirectoryFromWeek();
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);

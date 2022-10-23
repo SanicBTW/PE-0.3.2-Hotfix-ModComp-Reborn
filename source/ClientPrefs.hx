@@ -44,116 +44,86 @@ class ClientPrefs
 	public static var goodWindow:Int = 90;
 	public static var badWindow:Int = 135;
 	public static var safeFrames:Float = 10;
-	public static var allowFileSys:Bool = false;
-	public static var answeredReq:Bool = false;
 	public static var ghostTappingBFSing:Bool = true;
 	public static var comboStacking:Bool = true;
 	public static var cameraMovementDisplacement:Float = 15; // about to be deprecated
 	public static var pauseOnFocusLost:Bool = true;
 	public static var snapCameraOnGameover:Bool = true;
 	public static var counterFont:String = "Funkin";
+	public static var osuManiaSimulation:Bool = true; //not exactly a simulation but yeah
+	public static var ratingsStyle:String = "Classic";
+	public static var smallRatingSize:Bool = true;
 
-	public static var defaultKeys:Array<FlxKey> = [
-		A,
-		LEFT, // Note Left
-		S,
-		DOWN, // Note Down
-		W,
-		UP, // Note Up
-		D,
-		RIGHT, // Note Right
-		A,
-		LEFT, // UI Left
-		S,
-		DOWN, // UI Down
-		W,
-		UP, // UI Up
-		D,
-		RIGHT, // UI Right
-		R,
-		NONE, // Reset
-		SPACE,
-		ENTER, // Accept
-		BACKSPACE,
-		ESCAPE, // Back
-		ENTER,
-		ESCAPE // Pause
+	public static var keyBinds:Map<String, Array<FlxKey>> = [
+		//Key Bind, Name for ControlsSubState
+		'note_left'		=> [A, LEFT],
+		'note_down'		=> [S, DOWN],
+		'note_up'		=> [W, UP],
+		'note_right'	=> [D, RIGHT],
+		
+		'ui_left'		=> [A, LEFT],
+		'ui_down'		=> [S, DOWN],
+		'ui_up'			=> [W, UP],
+		'ui_right'		=> [D, RIGHT],
+		
+		'accept'		=> [SPACE, ENTER],
+		'back'			=> [BACKSPACE, ESCAPE],
+		'pause'			=> [ENTER, ESCAPE],
+		'reset'			=> [R, NONE],
+		
+		'volume_mute'	=> [ZERO, NONE],
+		'volume_up'		=> [NUMPADPLUS, PLUS],
+		'volume_down'	=> [NUMPADMINUS, MINUS],
+		
+		'debug_1'		=> [SEVEN, NONE],
+		'debug_2'		=> [EIGHT, NONE]
 	];
-	// Every key has two binds, these binds are defined on defaultKeys! If you want your control to be changeable, you have to add it on ControlsSubState (inside OptionsState)'s list
-	public static var keyBinds:Array<Dynamic> = [
-		// Key Bind, Name for ControlsSubState
-		[Control.NOTE_LEFT, 'Left'],
-		[Control.NOTE_DOWN, 'Down'],
-		[Control.NOTE_UP, 'Up'],
-		[Control.NOTE_RIGHT, 'Right'],
-		[Control.UI_LEFT, 'Left '], // Added a space for not conflicting on ControlsSubState
-		[Control.UI_DOWN, 'Down '], // Added a space for not conflicting on ControlsSubState
-		[Control.UI_UP, 'Up '], // Added a space for not conflicting on ControlsSubState
-		[Control.UI_RIGHT, 'Right '], // Added a space for not conflicting on ControlsSubState
-		[Control.RESET, 'Reset'],
-		[Control.ACCEPT, 'Accept'],
-		[Control.BACK, 'Back'],
-		[Control.PAUSE, 'Pause']
-	];
-	public static var lastControls:Array<FlxKey> = defaultKeys.copy();
+	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
+
+	public static function loadDefaultKeys() {
+		defaultKeys = keyBinds.copy();
+		//trace(defaultKeys);
+	}
 
 	// ayo i might change this, im too fucking tired of adding FlxG.save.data for each new option
 	public static function saveSettings()
 	{
-		FlxG.save.data.downScroll = downScroll;
-		FlxG.save.data.middleScroll = middleScroll;
-		FlxG.save.data.showFPS = showFPS;
-		FlxG.save.data.flashing = flashing;
-		FlxG.save.data.globalAntialiasing = globalAntialiasing;
-		FlxG.save.data.noteSplashes = noteSplashes;
-		FlxG.save.data.lowQuality = lowQuality;
-		FlxG.save.data.framerate = framerate;
-		FlxG.save.data.cursing = cursing;
-		FlxG.save.data.violence = violence;
-		FlxG.save.data.camZooms = camZooms;
-		FlxG.save.data.noteOffset = noteOffset;
-		FlxG.save.data.hideHud = hideHud;
-		FlxG.save.data.arrowHSV = arrowHSV;
-		FlxG.save.data.imagesPersist = imagesPersist;
-		FlxG.save.data.ghostTapping = ghostTapping;
-		FlxG.save.data.hideTime = hideTime;
-
-		FlxG.save.data.showMemory = showMemory;
-		FlxG.save.data.optScoreZoom = optScoreZoom;
-		FlxG.save.data.cameraMovement = cameraMovement;
-		FlxG.save.data.iconBoping = iconBoping;
-		FlxG.save.data.pauseMusic = pauseMusic;
-		FlxG.save.data.missVolume = missVolume;
-		FlxG.save.data.hitsoundVolume = hitsoundVolume;
-		FlxG.save.data.scoreTextDesign = scoreTextDesign;
-		FlxG.save.data.comboOffset = comboOffset;
-		FlxG.save.data.inputType = inputType;
-		FlxG.save.data.smoothCamZoom = smoothCamZoom;
-		FlxG.save.data.opponentNoteSplash = opponentNoteSplash;
-		FlxG.save.data.ratingOffset = ratingOffset;
-		FlxG.save.data.sickWindow = sickWindow;
-		FlxG.save.data.goodWindow = goodWindow;
-		FlxG.save.data.badWindow = badWindow;
-		FlxG.save.data.safeFrames = safeFrames;
-		FlxG.save.data.allowFileSys = allowFileSys;
-		FlxG.save.data.answeredReq = answeredReq;
-		FlxG.save.data.ghostTappingBFSing = ghostTappingBFSing;
-		FlxG.save.data.comboStacking = comboStacking;
-		FlxG.save.data.cameraMovementDisplacement = cameraMovementDisplacement;
-		FlxG.save.data.pauseOnFocusLost = pauseOnFocusLost;
-		FlxG.save.data.snapCameraOnGameover = snapCameraOnGameover;
-		FlxG.save.data.counterFont = counterFont;
-
-		FlxG.save.flush();
+		saveFlxGPrefs();
 
 		var save:FlxSave = new FlxSave();
-		save.bind('controls', 'ninjamuffin99'); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
-		save.data.customControls = lastControls;
+		save.bind('controls_v2', 'ninjamuffin99'); //Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
+		save.data.customControls = keyBinds;
 		save.flush();
 		FlxG.log.add("Settings saved!");
 	}
 
 	public static function loadPrefs()
+	{
+		loadFlxGPrefs();
+
+		// flixel automatically saves your volume!
+		if(FlxG.save.data.volume != null)
+		{
+			FlxG.sound.volume = FlxG.save.data.volume;
+		}
+		if (FlxG.save.data.mute != null)
+		{
+			FlxG.sound.muted = FlxG.save.data.mute;
+		}
+
+		//uhhhh do i try to make this a settings file too or???
+		var save:FlxSave = new FlxSave();
+		save.bind('controls_v2', 'ninjamuffin99');
+		if(save != null && save.data.customControls != null) {
+			var loadedControls:Map<String, Array<FlxKey>> = save.data.customControls;
+			for (control => keys in loadedControls) {
+				keyBinds.set(control, keys);
+			}
+			reloadControls();
+		}
+	}
+
+	static function loadFlxGPrefs()
 	{
 		if (FlxG.save.data.downScroll != null)
 			downScroll = FlxG.save.data.downScroll;
@@ -239,10 +209,6 @@ class ClientPrefs
 			badWindow = FlxG.save.data.badWindow;
 		if (FlxG.save.data.safeFrames != null)
 			safeFrames = FlxG.save.data.safeFrames;
-		if (FlxG.save.data.allowFileSys != null)
-			allowFileSys = FlxG.save.data.allowFileSys;
-		if (FlxG.save.data.answeredReq != null)
-			answeredReq = FlxG.save.data.answeredReq;
 		if (FlxG.save.data.ghostTappingBFSing != null)
 			ghostTappingBFSing = FlxG.save.data.ghostTappingBFSing;
 		if (FlxG.save.data.comboStacking != null)
@@ -255,49 +221,87 @@ class ClientPrefs
 			snapCameraOnGameover = FlxG.save.data.snapCameraOnGameover;
 		if (FlxG.save.data.counterFont != null)
 			counterFont = FlxG.save.data.counterFont;
-
-		var save:FlxSave = new FlxSave();
-		save.bind('controls', 'ninjamuffin99');
-		if (save != null && save.data.customControls != null)
-			reloadControls(save.data.customControls);
+		if (FlxG.save.data.osuManiaSimulation != null)
+			osuManiaSimulation = FlxG.save.data.osuManiaSimulation;
+		if (FlxG.save.data.ratingsStyle != null)
+			ratingsStyle = FlxG.save.data.ratingsStyle;
+		if (FlxG.save.data.smallRatingSize != null)
+			smallRatingSize = FlxG.save.data.smallRatingSize;
 	}
 
-	public static function reloadControls(newKeys:Array<FlxKey>)
+	static function saveFlxGPrefs()
 	{
-		ClientPrefs.removeControls(ClientPrefs.lastControls);
-		ClientPrefs.lastControls = newKeys.copy();
-		ClientPrefs.loadControls(ClientPrefs.lastControls);
+		FlxG.save.data.downScroll = downScroll;
+		FlxG.save.data.middleScroll = middleScroll;
+		FlxG.save.data.showFPS = showFPS;
+		FlxG.save.data.flashing = flashing;
+		FlxG.save.data.globalAntialiasing = globalAntialiasing;
+		FlxG.save.data.noteSplashes = noteSplashes;
+		FlxG.save.data.lowQuality = lowQuality;
+		FlxG.save.data.framerate = framerate;
+		FlxG.save.data.cursing = cursing;
+		FlxG.save.data.violence = violence;
+		FlxG.save.data.camZooms = camZooms;
+		FlxG.save.data.noteOffset = noteOffset;
+		FlxG.save.data.hideHud = hideHud;
+		FlxG.save.data.arrowHSV = arrowHSV;
+		FlxG.save.data.imagesPersist = imagesPersist;
+		FlxG.save.data.ghostTapping = ghostTapping;
+		FlxG.save.data.hideTime = hideTime;
+
+		FlxG.save.data.showMemory = showMemory;
+		FlxG.save.data.optScoreZoom = optScoreZoom;
+		FlxG.save.data.cameraMovement = cameraMovement;
+		FlxG.save.data.iconBoping = iconBoping;
+		FlxG.save.data.pauseMusic = pauseMusic;
+		FlxG.save.data.missVolume = missVolume;
+		FlxG.save.data.hitsoundVolume = hitsoundVolume;
+		FlxG.save.data.scoreTextDesign = scoreTextDesign;
+		FlxG.save.data.comboOffset = comboOffset;
+		FlxG.save.data.inputType = inputType;
+		FlxG.save.data.smoothCamZoom = smoothCamZoom;
+		FlxG.save.data.opponentNoteSplash = opponentNoteSplash;
+		FlxG.save.data.ratingOffset = ratingOffset;
+		FlxG.save.data.sickWindow = sickWindow;
+		FlxG.save.data.goodWindow = goodWindow;
+		FlxG.save.data.badWindow = badWindow;
+		FlxG.save.data.safeFrames = safeFrames;
+		FlxG.save.data.ghostTappingBFSing = ghostTappingBFSing;
+		FlxG.save.data.comboStacking = comboStacking;
+		FlxG.save.data.cameraMovementDisplacement = cameraMovementDisplacement;
+		FlxG.save.data.pauseOnFocusLost = pauseOnFocusLost;
+		FlxG.save.data.snapCameraOnGameover = snapCameraOnGameover;
+		FlxG.save.data.counterFont = counterFont;
+		FlxG.save.data.osuManiaSimulation = osuManiaSimulation;
+		FlxG.save.data.ratingsStyle = ratingsStyle;
+		FlxG.save.data.smallRatingSize = smallRatingSize;
+
+		FlxG.save.flush();
 	}
 
-	private static function removeControls(controlArray:Array<FlxKey>)
-	{
-		for (i in 0...keyBinds.length)
-		{
-			var controlValue:Int = i * 2;
-			var controlsToRemove:Array<FlxKey> = [];
-			for (j in 0...2)
-			{
-				if (controlArray[controlValue + j] != NONE)
-					controlsToRemove.push(controlArray[controlValue + j]);
+	public static function reloadControls() {
+		PlayerSettings.player1.controls.setKeyboardScheme(KeyboardScheme.Solo);
+
+		TitleState.muteKeys = copyKey(keyBinds.get('volume_mute'));
+		TitleState.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
+		TitleState.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
+		FlxG.sound.muteKeys = TitleState.muteKeys;
+		FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
+		FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
+	}
+	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey> {
+		var copiedArray:Array<FlxKey> = arrayToCopy.copy();
+		var i:Int = 0;
+		var len:Int = copiedArray.length;
+
+		while (i < len) {
+			if(copiedArray[i] == NONE) {
+				copiedArray.remove(NONE);
+				--i;
 			}
-			if (controlsToRemove.length > 0)
-				PlayerSettings.player1.controls.unbindKeys(keyBinds[i][0], controlsToRemove);
+			i++;
+			len = copiedArray.length;
 		}
-	}
-
-	private static function loadControls(controlArray:Array<FlxKey>)
-	{
-		for (i in 0...keyBinds.length)
-		{
-			var controlValue:Int = i * 2;
-			var controlsToAdd:Array<FlxKey> = [];
-			for (j in 0...2)
-			{
-				if (controlArray[controlValue + j] != NONE)
-					controlsToAdd.push(controlArray[controlValue + j]);
-			}
-			if (controlsToAdd.length > 0)
-				PlayerSettings.player1.controls.bindKeys(keyBinds[i][0], controlsToAdd);
-		}
+		return copiedArray;
 	}
 }

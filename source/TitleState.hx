@@ -74,8 +74,6 @@ class TitleState extends MusicBeatState
 
 		Highscore.load();
 
-		setupFonts();
-
 		#if desktop
 		DiscordClient.initialize();
 		Application.current.onExit.add(function(exitCode)
@@ -108,6 +106,8 @@ class TitleState extends MusicBeatState
 				FlxG.sound.music.fadeIn(4, 0, 0.7);
 			}
 		}
+
+		setupFonts();
 
 		Conductor.changeBPM(102);
 		persistentUpdate = true;
@@ -373,13 +373,10 @@ class TitleState extends MusicBeatState
 				propername = "_sans";
 		}
 
-		if(Main.fpsVar != null && Main.memoryVar != null)
-		{
-			Main.fpsVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
-			Main.fpsVar.embedFonts = true;
-	
-			Main.memoryVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
-			Main.memoryVar.embedFonts = true;
-		}
+		Main.fpsVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
+		Main.fpsVar.embedFonts = true;
+
+		Main.memoryVar.defaultTextFormat = new TextFormat(propername, formatSize, 0xFFFFFF);
+		Main.memoryVar.embedFonts = true;
 	}
 }

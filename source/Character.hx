@@ -55,6 +55,7 @@ class Character extends FlxSprite
 	public var singDuration:Float = 4; // Multiplier of how long a character holds the sing pose
 	public var idleSuffix:String = '';
 	public var danceIdle:Bool = false; // Character use "danceLeft" and "danceRight" instead of "idle"
+	public var skipDance:Bool = false;
 
 	public var healthIcon:String = 'face';
 	public var animationsArray:Array<AnimArray> = [];
@@ -108,9 +109,6 @@ class Character extends FlxSprite
 				var json:CharacterFile = cast Json.parse(rawJson);
 				if (Assets.exists(Paths.getPath('images/' + json.image + '.txt', TEXT)))
 					spriteType = "packer";
-
-				if (Assets.exists(Paths.getPath('images/' + json.image + '/Animation.json', TEXT)))
-					spriteType = "texture";
 
 				switch (spriteType)
 				{
@@ -173,7 +171,6 @@ class Character extends FlxSprite
 				{
 					quickAnimAdd('idle', 'BF idle dance');
 				}
-				// trace('Loaded file to character ' + curCharacter);
 		}
 		originalFlipX = flipX;
 
@@ -240,7 +237,7 @@ class Character extends FlxSprite
 	 */
 	public function dance()
 	{
-		if (!debugMode && !specialAnim)
+		if (!debugMode && !skipDance && !specialAnim)
 		{
 			if (danceIdle)
 			{

@@ -253,6 +253,9 @@ class Note extends FlxSprite
 			}
 		}
 
+		if(Paths.getSparrowAtlas(skin) == null)
+			skin = "NOTE_assets";
+
 		var animName:String = null;
 		if (animation.curAnim != null)
 		{
@@ -367,25 +370,34 @@ class Note extends FlxSprite
 
 		if (mustPress)
 		{
-			// ok river
-			if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
-				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
-				canBeHit = true;
+			//copied from psych x kade
+			if (isSustainNote)
+			{
+				if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * 1.5)
+					&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
+					canBeHit = true;
+				else
+					canBeHit = false;
+			}
 			else
-				canBeHit = false;
+			{
+				if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
+					&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
+					canBeHit = true;
+				else
+					canBeHit = false;
+			}
 
-			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset && !wasGoodHit)
+			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset * Conductor.timeScale && !wasGoodHit)
 				tooLate = true;
 		}
 		else
 		{
 			canBeHit = false;
 
-			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
-			{
+			if (strumTime <= Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
 				if ((isSustainNote && prevNote.wasGoodHit) || strumTime <= Conductor.songPosition)
 					wasGoodHit = true;
-			}
 		}
 
 		if (tooLate && !inEditor)

@@ -1,5 +1,7 @@
 package;
 
+import flixel.util.FlxColor;
+import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -14,6 +16,8 @@ import lime.utils.AssetLibrary;
 import lime.utils.AssetManifest;
 import lime.utils.Assets as LimeAssets;
 import openfl.utils.Assets;
+
+using StringTools;
 
 // update to the loading state, originally from scarlet melopeia port
 class LoadingState extends MusicBeatState
@@ -38,16 +42,20 @@ class LoadingState extends MusicBeatState
 		this.directory = directory;
 	}
 
+	var bg:FlxSprite;
 	var loadBar:FlxBar;
 	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
+	var bgColorTween:FlxTween;
+	var lastColor:FlxColor;
 
 	override function create()
 	{
 		Conductor.changeBPM(102);
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
+		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		add(bg);
+		lastColor = bg.color;
 
 		gfDance = new FlxSprite(552, 0);
 		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
@@ -60,7 +68,7 @@ class LoadingState extends MusicBeatState
 		loadBar.screenCenter();
 		loadBar.y = FlxG.height * 0.97;
 		loadBar.screenCenter(X);
-		loadBar.scale.set(10, 1);
+		loadBar.scale.set(12, 1);
 		loadBar.antialiasing = ClientPrefs.globalAntialiasing;
 		add(loadBar);
 
@@ -74,10 +82,12 @@ class LoadingState extends MusicBeatState
 				if (PlayState.SONG.needsVoices)
 					checkLoadSong(getVocalPath());
 			}
-			checkLibrary("shared");
+			for(i in 0...Main.loadLibs.length)
+				checkLibrary(Main.loadLibs[i]);
 			if (directory != null && directory.length > 0 && directory != 'shared')
 			{
 				checkLibrary(directory);
+				Main.clearLibs.push(directory);
 			}
 
 			var fadeTime = 0.5;
@@ -90,12 +100,6 @@ class LoadingState extends MusicBeatState
 	{
 		if (!Assets.cache.hasSound(path))
 		{
-			var library = Assets.getLibrary("songs");
-			final symbolPath = path.split(":").pop();
-			// @:privateAccess
-			// library.types.set(symbolPath, SOUND);
-			// @:privateAccess
-			// library.pathGroups.set(symbolPath, [library.__cacheBreak(symbolPath)]);
 			var callback = callbacks.add("song:" + path);
 			Assets.loadSound(path).onComplete(function(_)
 			{
@@ -106,7 +110,6 @@ class LoadingState extends MusicBeatState
 
 	function checkLibrary(library:String)
 	{
-		trace(Assets.hasLibrary(library));
 		if (Assets.getLibrary(library) == null)
 		{
 			@:privateAccess
@@ -147,6 +150,18 @@ class LoadingState extends MusicBeatState
 			else
 				gfDance.animation.play('danceLeft');
 		}
+
+		if (curBeat % 4 == 0)
+		{
+			var curNewColor:FlxColor = FlxG.random.color();
+			if(bgColorTween != null)
+				bgColorTween.cancel();
+			bgColorTween = FlxTween.color(bg, 1, lastColor, curNewColor, { onComplete: function(twn:FlxTween)
+			{
+				lastColor = curNewColor;
+				bgColorTween = null;
+			}});
+		}
 	}
 
 	function onLoad()
@@ -186,12 +201,13 @@ class LoadingState extends MusicBeatState
 
 		#if NO_PRELOAD_ALL
 		var loaded:Bool = false;
+
 		if (PlayState.SONG != null)
 		{
 			loaded = isSoundLoaded(getSongPath())
 				&& (!PlayState.SONG.needsVoices || isSoundLoaded(getVocalPath()))
-				&& isLibraryLoaded("shared")
-				&& isLibraryLoaded(directory);
+				&& isLibraryLoaded(directory)
+				&& areLibrariesLoaded();
 		}
 
 		if (!loaded)
@@ -213,6 +229,18 @@ class LoadingState extends MusicBeatState
 	{
 		return Assets.getLibrary(library) != null;
 	}
+
+	//i dont belive this is working butttt alright
+	static function areLibrariesLoaded():Bool
+	{
+		for(i in 0...Main.loadLibs.length)
+		{
+			trace(Main.loadLibs[i]);
+			trace(Assets.getLibrary(Main.loadLibs[i]) != null);
+			return Assets.getLibrary(Main.loadLibs[i]) != null;
+		}
+		return false;
+	}
 	#end
 
 	override function destroy()
@@ -220,6 +248,7 @@ class LoadingState extends MusicBeatState
 		super.destroy();
 
 		callbacks = null;
+		bgColorTween = null;
 	}
 
 	static function initSongsManifest()
