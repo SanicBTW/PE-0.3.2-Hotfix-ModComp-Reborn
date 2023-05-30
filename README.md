@@ -4,7 +4,7 @@
 
 Thanks to Levi for the help
 
-Currently only being built to HTML5 (actively)
+Currently only being built to HTML5 (will come back as soon as i finish my engine)
 
 # shit to avoid forgettin
 
